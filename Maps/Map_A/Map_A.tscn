@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://Maps/Common/Enemy_Spawner.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Maps/Map_A/Map_A_Collision.tscn" type="PackedScene" id=2]
+
+[node name="FullMap" type="Spatial"]
+
+[node name="Collision" parent="." instance=ExtResource( 2 )]
+
+[node name="EnemySpawns" type="Node" parent="."]
+
+[node name="Spawner" parent="EnemySpawns" instance=ExtResource( 1 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 4.70223, 0, -15.2177 )
+
+[node name="Spawner2" parent="EnemySpawns" instance=ExtResource( 1 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -12.9806, 0, -13.2477 )
+
+[node name="Spawner3" parent="EnemySpawns" instance=ExtResource( 1 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -15.9098, 0, -10.2801 )
