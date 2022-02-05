@@ -24,6 +24,7 @@ func StartServer():
 func _Peer_Connected(player_id):
 	print("User ", str(player_id), " connected")
 	map_functions.SpawnPlayer(player_id, Vector3(0, 0, 0))
+	rpc_id(player_id, "SuccessfullyConnected")
 	rpc_id(0, "SpawnNewPlayer", player_id, Vector3(0, 0, 0))
 	
 func _Peer_Disconnected(player_id):
@@ -41,8 +42,6 @@ remote func RecievePlayerState(player_state):
 	else:
 		player_state_collection[player_id] = player_state
 		
-	
-		
 func SendWorldState(world_state):
 	rpc_unreliable_id(0, "RecieveWorldState", world_state)
 	
@@ -59,3 +58,6 @@ remote func start_cast(target, spell_id):
 	
 func notify_cast_finished(player_id):
 	rpc_id(player_id, "notify_cast_finished")
+	
+func notify_enemy_despawned(enemy_id):
+	rpc_id(0, "despawn_enemy",enemy_id)

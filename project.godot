@@ -10,11 +10,17 @@ config_version=4
 
 _global_script_classes=[ {
 "base": "KinematicBody",
+"class": "Enemy",
+"language": "GDScript",
+"path": "res://Entities/Enemy_Server.gd"
+}, {
+"base": "KinematicBody",
 "class": "PlayerTemplate",
 "language": "GDScript",
 "path": "res://Entities/PlayerTemplate_Server.gd"
 } ]
 _global_script_class_icons={
+"Enemy": "",
 "PlayerTemplate": ""
 }
 

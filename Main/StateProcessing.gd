@@ -13,9 +13,11 @@ func _physics_process(delta):
 		var player_state = get_parent().player_state_collection.duplicate(true)
 		for player in player_state.keys():
 			player_state[player].erase("T")
+			
 		world_state["T"] = OS.get_system_time_msecs()
 		world_state["Players"] = player_state
 		world_state["Enemies"] = get_node("../Map").enemy_list.duplicate(true)
+		world_state["PState"] = get_node("../Map").player_info.duplicate(true)
 		# Verification
 		# Anti-Cheat
 		# Cuts (chunks / maps)
