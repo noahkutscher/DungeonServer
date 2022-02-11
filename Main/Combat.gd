@@ -3,6 +3,7 @@ extends Node
 var active_casts = {}
 onready var enemy_nodes = get_parent().get_node("Map").get_node("Enemies")
 onready var player_nodes = get_parent().get_node("Map").get_node("Players")
+onready var map_functions = get_node("../Map")
 
 
 func _process(delta):
@@ -23,9 +24,12 @@ func stop_auto_attack(caster):
 	# set caster auto_attack = false
 	pass
 
-func start_cast(target, spell_id):
+func start_cast(player_id, target, spell_id):
+	
+	if map_functions.player_info[player_id]["PlayerMana"] < 20:
+		return false
+		
 	print("Starting Cast")
-	var player_id = get_tree().get_rpc_sender_id()
 	var ttc = 1.5
 	var cd = 0
 	var cast_range = 20
@@ -48,6 +52,8 @@ func start_cast(target, spell_id):
 		"target": target,
 		"spell_id": spell_id
 	}
+	
+	return true
 
 	# is caster in range?
 	# set caster casting = true
@@ -63,11 +69,14 @@ func finish_cast(caster, target, spell_id):
 	
 	if spell_id == 0:
 		enemy_nodes.get_node(str(target)).handle_dmg(caster, 60)
+		player_nodes.get_node(str(caster)).subtract_mana(20)
 		
 	if spell_id == 123:
 		player_nodes.get_node(str(target)).handle_heal(caster, 20)
+		player_nodes.get_node(str(caster)).subtract_mana(20)
 		
 	if spell_id == 666:
 		enemy_nodes.get_node(str(target)).force_target(caster)
+		player_nodes.get_node(str(caster)).subtract_mana(20)
 	
 	get_parent().notify_cast_finished(caster)

@@ -54,7 +54,9 @@ remote func DetermineLatency(client_time):
 	rpc_id(player_id, "ReturnLatency", client_time)
 
 remote func start_cast(target, spell_id):
-	combat_func.start_cast(target, spell_id)
+	var player_id = get_tree().get_rpc_sender_id()
+	var success = combat_func.start_cast(player_id, target, spell_id)
+	rpc_id(player_id, "notify_cast_successfull", success, false)
 	
 func notify_cast_finished(player_id):
 	rpc_id(player_id, "notify_cast_finished")
