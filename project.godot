@@ -30,6 +30,10 @@ config/name="Dungeon Server"
 run/main_scene="res://Main/Server.tscn"
 config/icon="res://icon.png"
 
+[autoload]
+
+Util="*res://Util/Util.gd"
+
 [rendering]
 
 environment/default_environment="res://default_env.tres"

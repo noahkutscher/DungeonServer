@@ -108,8 +108,8 @@ func handle_dmg(source, damage):
 		return
 	
 	if target == null:
-		if map_info.has_node("Players/" + str(source)):
-			target = map_info.get_node("Players/" + str(source))
+		if map_info.has_node("Entities/" + str(source)):
+			target = map_info.get_node("Entities/" + str(source))
 			
 	var new_health = map_info.enemy_list[enemy_id]["EnemyHealth"] - damage
 	
@@ -118,4 +118,4 @@ func handle_dmg(source, damage):
 		die()
 		
 func force_target(player_id):
-	target = map_info.get_node("Players/" + str(player_id))
+	target = map_info.get_node("Entities/" + str(player_id))

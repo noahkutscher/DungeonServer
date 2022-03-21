@@ -1,7 +1,5 @@
 extends Node
 
-# -7.4 -22
-
 var enemy_id_counter = 1
 var enemy_maximum = 3
 var open_locations = [0, 1, 2, 3, 4]
@@ -22,20 +20,19 @@ func _ready():
 	
 func SpawnEnemy(type, location):
 	var enemy = enemy_prefab.instance()
-	enemy.name = str(enemy_id_counter)
+	var guid = Util.GUID()
+	enemy.name = str(guid)
 	enemy.translation = location
-	
-	enemy.enemy_id = enemy_id_counter
-	enemy_id_counter += 1
-	get_node("Enemies").add_child(enemy)
+	enemy.enemy_id = guid
+	get_node("Entities").add_child(enemy)
 	
 func SpawnPlayer(player_id, location):
 	var player = player_prefab.instance()
 	player.name = str(player_id)
 	player.player_id = player_id
 	player.translation = location
-	get_node("Players").add_child(player)
+	get_node("Entities").add_child(player)
 	
 func DespawnPlayer(player_id):
 	player_info.erase(player_id)
-	get_node("Players/" + str(player_id)).queue_free()
+	get_node("Entities/" + str(player_id)).queue_free()

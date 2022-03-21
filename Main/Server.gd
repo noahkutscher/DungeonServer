@@ -6,8 +6,11 @@ var max_players = 100
 
 var player_state_collection = {}
 
+var con_id_to_guid = {}
+var guid_to_con_id = {}
+
 onready var combat_func = get_node("Combat")
-onready var player_set = get_node("Map/Players")
+onready var player_set = get_node("Map/Entities")
 onready var map_functions = get_node("Map")
 
 func _ready():
@@ -23,18 +26,28 @@ func StartServer():
 
 func _Peer_Connected(player_id):
 	print("User ", str(player_id), " connected")
-	map_functions.SpawnPlayer(player_id, Vector3(0, 0, 0))
-	rpc_id(player_id, "SuccessfullyConnected")
-	rpc_id(0, "SpawnNewPlayer", player_id, Vector3(0, 0, 0))
+	
+	var player_guid = Util.GUID()
+	con_id_to_guid[player_id] = player_guid
+	guid_to_con_id[player_guid] = player_id
+	print("Got ID ", str(player_guid))
+	
+	map_functions.SpawnPlayer(player_guid, Vector3(0, 0, 0))
+	
+	rpc_id(player_id, "SuccessfullyConnected", player_guid)
+	rpc_id(0, "SpawnNewPlayer", player_id, Vector3(0, 0, 0), player_guid)
 	
 func _Peer_Disconnected(player_id):
 	print("User " + str(player_id) + " disconnected")
-	player_state_collection.erase(player_id)
-	map_functions.DespawnPlayer(player_id)
-	rpc_id(0, "DespawnNewPlayer", player_id)
+	
+	
+	player_state_collection.erase(con_id_to_guid[player_id])
+	map_functions.DespawnPlayer(con_id_to_guid[player_id])
+	rpc_id(0, "DespawnNewPlayer", con_id_to_guid[player_id])
 	
 remote func RecievePlayerState(player_state):
-	var player_id = get_tree().get_rpc_sender_id()
+	var con_id = get_tree().get_rpc_sender_id()
+	var player_id = con_id_to_guid[con_id]
 	if player_state_collection.has(player_id):
 		if player_state_collection[player_id]["T"] < player_state["T"]:
 			player_state_collection[player_id] = player_state
@@ -46,20 +59,20 @@ func SendWorldState(world_state):
 	rpc_unreliable_id(0, "RecieveWorldState", world_state)
 	
 remote func FetchServerTime(client_time):
-	var player_id = get_tree().get_rpc_sender_id()
-	rpc_id(player_id, "ReturnServerTime", OS.get_system_time_msecs(), client_time)
+	var con_id = get_tree().get_rpc_sender_id()
+	rpc_id(con_id, "ReturnServerTime", OS.get_system_time_msecs(), client_time)
 	
 remote func DetermineLatency(client_time):
-	var player_id = get_tree().get_rpc_sender_id()
-	rpc_id(player_id, "ReturnLatency", client_time)
+	var con_id = get_tree().get_rpc_sender_id()
+	rpc_id(con_id, "ReturnLatency", client_time)
 
 remote func start_cast(target, spell_id):
-	var player_id = get_tree().get_rpc_sender_id()
-	var success = combat_func.start_cast(player_id, target, spell_id)
-	rpc_id(player_id, "notify_cast_successfull", success, false)
+	var con_id = get_tree().get_rpc_sender_id()
+	var success = combat_func.start_cast(con_id_to_guid[con_id], target, spell_id)
+	rpc_id(con_id, "notify_cast_successfull", success, false)
 	
-func notify_cast_finished(player_id):
-	rpc_id(player_id, "notify_cast_finished")
+func notify_cast_finished(player_guid):
+	rpc_id(guid_to_con_id[player_guid], "notify_cast_finished")
 	
 func notify_enemy_despawned(enemy_id):
 	rpc_id(0, "despawn_enemy",enemy_id)

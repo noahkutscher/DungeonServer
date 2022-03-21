@@ -1,8 +1,8 @@
 extends Node
 
 var active_casts = {}
-onready var enemy_nodes = get_parent().get_node("Map").get_node("Enemies")
-onready var player_nodes = get_parent().get_node("Map").get_node("Players")
+onready var enemy_nodes = get_parent().get_node("Map").get_node("Entities")
+onready var player_nodes = get_parent().get_node("Map").get_node("Entities")
 onready var map_functions = get_node("../Map")
 
 

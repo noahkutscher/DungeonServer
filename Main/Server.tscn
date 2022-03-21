@@ -14,9 +14,7 @@ script = ExtResource( 2 )
 [node name="Map" type="Node" parent="."]
 script = ExtResource( 3 )
 
-[node name="Enemies" type="Node" parent="Map"]
-
-[node name="Players" type="Node" parent="Map"]
+[node name="Entities" type="Node" parent="Map"]
 
 [node name="Combat" type="Node" parent="."]
 script = ExtResource( 4 )
